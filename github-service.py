@@ -87,7 +87,7 @@ githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
             # githubService collab add -r ${REPO_NAME} -c ${COLLAB_NAME} -c ${COLLAB_NAME}
             listCollaborators = []
             collaborators = []
-            repositoryName = self.username + '/' + self.repository
+            repositoryName = self.user_github.login + '/' + self.repository
             repository = self.github_login.get_repo(repositoryName)
             getCollaborators = repository.get_collaborators()
             for getCollaborator in getCollaborators:
