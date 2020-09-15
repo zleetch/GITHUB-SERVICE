@@ -68,10 +68,10 @@ $ python3 github-service.py collab add -r ${repositoryName} -c ${collaboratorNam
 
 - Delete one collaborator into repository
 ```
-$ python3 github-service.py collab add -r ${repositoryName} -c ${collaboratorName}
+$ python3 github-service.py collab del -r ${repositoryName} -c ${collaboratorName}
 ```
 
 - Delete multiple collaborator into repository
 ```
-$ python3 github-service.py collab add -r ${repositoryName} -c ${collaboratorName} -c ${collaboratorName}
+$ python3 github-service.py collab del -r ${repositoryName} -c ${collaboratorName} -c ${collaboratorName}
 ```
