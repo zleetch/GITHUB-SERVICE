@@ -69,6 +69,7 @@ githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
         if self.action == "add":
             # githubService repo add -r ${REPO_NAME}
             # githubService repo add -r ${REPO_NAME} --private
+            # githubService repo add -r ${REPO_NAME} --init
             listRepo = []
             for repo in self.user_github.get_repos():
                 listRepo.append(repo.name)
