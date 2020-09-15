@@ -19,22 +19,22 @@ Args:
   -u    --user      Username
         --access    Access Token
   -p    --pass      Password
-  -n    --name      Name for repository
   -r    --repo      Repository name
+        --private   Make repository become private
   -c    --collab    Collaborator name
 
 If you not define the GITHUB_USERNAME and GITHUB_PASSWORD or GITHUB_ACCESSTOKEN in environment you must command like this:
-githubService -u '$USERNAME' -p '$PASSWORD' <function> <action> [<args>]
-githubService -access '$ACCESS_TOKEN' <function> <action> [<args>]
+githubService <function> <action>  -u '$USERNAME' -p '$PASSWORD'  [<args>]
+githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
 ''')
         parser.add_argument('function', choices=['collab', 'repo'], metavar='Function', type=str)
         parser.add_argument('action', choices=['add'], metavar='Action', type=str)
-        parser.add_argument('-u', '--user', dest='username', metavar='Username', type=str, default=False)
-        parser.add_argument('--access', dest='accessToken', metavar='Access token', type=str, default=False)
-        parser.add_argument('-p', '--pass', dest='password', metavar='Password', type=str, default=False)
-        parser.add_argument('-n', '--name', dest='name', metavar='Name', type=str, default=False)
-        parser.add_argument('-r', '--repo', dest='repository', metavar='Repo', type=str, default=False)
-        parser.add_argument('-c', '--collab', action='append', dest='collaborators', metavar='Collaborators', type=str)
+        parser.add_argument('-u', '--user', dest='username', metavar='Username login', type=str, default=False)
+        parser.add_argument('--access', dest='accessToken', metavar='Access token login', type=str, default=False)
+        parser.add_argument('-p', '--pass', dest='password', metavar='Password login', type=str, default=False)
+        parser.add_argument('-r', '--repo', dest='repository', metavar='Repository for collaborator', type=str, default=False)
+        parser.add_argument('--private', dest='privateRepository', action='store_true', default=False)
+        parser.add_argument('-c', '--collab', dest='collaborators', metavar='Collaborators', action='append', type=str)
         args = parser.parse_args()
 
         #LOGIN
@@ -42,10 +42,8 @@ githubService -access '$ACCESS_TOKEN' <function> <action> [<args>]
         if args.username and args.password:
             self.username = args.username
             self.password = args.password
-            print("You username or password is wrong")
         elif args.accessToken:
             self.accessToken = args.accessToken
-            print("You access token is wrong")
         elif os.getenv('GITHUB_USERNAME') and os.getenv('GITHUB_PASSWORD'):
             self.username = os.getenv('GITHUB_USERNAME')
             self.password = os.getenv('GITHUB_PASSWORD')
@@ -59,22 +57,27 @@ githubService -access '$ACCESS_TOKEN' <function> <action> [<args>]
 
         self.function = args.function
         self.action = args.action
-        self.name = args.name
         self.repository = args.repository
+        self.privateRepository = args.privateRepository
         self.collaborators = args.collaborators
         getattr(self, self.function)()
 
     def repo(self):
         if self.action == "add":
-            # githubService repo add -n ${REPO_NAME}
+            # githubService repo add -r ${REPO_NAME}
+            # githubService repo add -r ${REPO_NAME} --private
             listRepo = []
             for repo in self.user_github.get_repos():
                 listRepo.append(repo.name)
-            if self.name in listRepo:
+            if self.repository in listRepo:
                 print("The repository already exist")
             else:
-                newRepo = self.user_github.create_repo(self.name)
-                print("The {} repository already created".format(self.name))
+                if self.privateRepository:
+                    newRepo = self.user_github.create_repo(self.repository, private=self.privateRepository)
+                    print("The {} private repository already created".format(self.repository))
+                else:
+                    newRepo = self.user_github.create_repo(self.repository)
+                    print("The {} public repository already created".format(self.repository))
 
     def collab(self):
         if self.action == "add":
