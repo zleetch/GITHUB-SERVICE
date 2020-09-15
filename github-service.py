@@ -41,6 +41,9 @@ githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
 
         #LOGIN
         print("LOGIN....")
+        self.username = False
+        self.password = False
+        self.accessToken = False
         if args.username and args.password:
             self.username = args.username
             self.password = args.password
