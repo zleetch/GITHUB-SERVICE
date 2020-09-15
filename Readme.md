@@ -48,6 +48,11 @@ $ python3 github-service.py repo add -r ${repositoryName} --private
 $ python3 github-service.py repo add -r ${repositoryName} --init
 ```
 
+- Delete repository
+```
+$ python3 github-service.py repo del -r ${repositoryName}
+```
+
 ## Collaborator
 > This command if you already setup the GITHUB_USERNAME and GITHUB_PASSWORD or GITHUB_ACCESSTOKEN in environment variable. If doesn't you must define the -u ${username} and -p ${password} or --access ${accessToken}
 
@@ -57,6 +62,16 @@ $ python3 github-service.py collab add -r ${repositoryName} -c ${collaboratorNam
 ```
 
 - Add multiple collaborator into repository
+```
+$ python3 github-service.py collab add -r ${repositoryName} -c ${collaboratorName} -c ${collaboratorName}
+```
+
+- Delete one collaborator into repository
+```
+$ python3 github-service.py collab add -r ${repositoryName} -c ${collaboratorName}
+```
+
+- Delete multiple collaborator into repository
 ```
 $ python3 github-service.py collab add -r ${repositoryName} -c ${collaboratorName} -c ${collaboratorName}
 ```
