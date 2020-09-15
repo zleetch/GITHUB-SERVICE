@@ -80,7 +80,7 @@ githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
                 print("The repository already exist")
             else:
                 newRepo = self.user_github.create_repo(self.repository, private=self.privateRepository, auto_init=self.initRepository)
-                print("The {} repository already created".format(self.repository))
+                print("{} repository created".format(self.repository))
 
     def collab(self):
         if self.action == "add":
@@ -98,7 +98,7 @@ githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
                     print("The collaborator {} in {} repository already exist".format(collaborator, self.repository))
                 else:
                     repository.add_to_collaborators(collaborator)
-                    print("The collaborator {} in {} repository already added please open the email invitations".format(collaborator, self.repository))
+                    print("{}, Please check email invitation for collab {} repository.".format(collaborator, self.repository))
 
 if __name__ == '__main__':
     githubService()
