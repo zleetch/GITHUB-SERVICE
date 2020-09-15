@@ -29,7 +29,7 @@ githubService <function> <action>  -u '$USERNAME' -p '$PASSWORD'  [<args>]
 githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
 ''')
         parser.add_argument('function', choices=['collab', 'repo'], metavar='Function', type=str)
-        parser.add_argument('action', choices=['add'], metavar='Action', type=str)
+        parser.add_argument('action', choices=['add', 'del'], metavar='Action', type=str)
         parser.add_argument('-u', '--user', dest='username', metavar='Username login', type=str, default=False)
         parser.add_argument('--access', dest='accessToken', metavar='Access token login', type=str, default=False)
         parser.add_argument('-p', '--pass', dest='password', metavar='Password login', type=str, default=False)
@@ -69,36 +69,51 @@ githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
         getattr(self, self.function)()
 
     def repo(self):
+        listRepo = []
+        for repo in self.user_github.get_repos():
+            listRepo.append(repo.name)
+
         if self.action == "add":
             # githubService repo add -r ${REPO_NAME}
             # githubService repo add -r ${REPO_NAME} --private
             # githubService repo add -r ${REPO_NAME} --init
-            listRepo = []
-            for repo in self.user_github.get_repos():
-                listRepo.append(repo.name)
             if self.repository in listRepo:
-                print("The repository already exist")
+                print("The {} repository already exist.".format(self.repository))
             else:
                 newRepo = self.user_github.create_repo(self.repository, private=self.privateRepository, auto_init=self.initRepository)
                 print("{} repository created".format(self.repository))
+        elif self.action == "del":
+            # githubService repo del -r ${REPO_NAME}
+            if self.repository in listRepo:
+                deleteRepo = self.github_login.get_repo(self.user_github.login + '/' + self.repository)
+                deleteRepo.delete()
+                print("{} repository has been deleted".format(self.repository))
+            else:
+                print("The {} repository doesn't exist.".format(self.repository))
 
     def collab(self):
-        if self.action == "add":
+        listCollaborators = []
+        collaborators = []
+        collaborators = self.collaborators
+        repositoryName = self.user_github.login + '/' + self.repository
+        repository = self.github_login.get_repo(repositoryName)
+        getCollaborators = repository.get_collaborators()
+        for getCollaborator in getCollaborators:
+            listCollaborators.append(getCollaborator.login)
+        for collaborator in collaborators:
+            if self.action == "add":
             # githubService collab add -r ${REPO_NAME} -c ${COLLAB_NAME} -c ${COLLAB_NAME}
-            listCollaborators = []
-            collaborators = []
-            repositoryName = self.user_github.login + '/' + self.repository
-            repository = self.github_login.get_repo(repositoryName)
-            getCollaborators = repository.get_collaborators()
-            for getCollaborator in getCollaborators:
-                listCollaborators.append(getCollaborator.login)
-            collaborators = self.collaborators
-            for collaborator in collaborators:
                 if collaborator in listCollaborators:
-                    print("The collaborator {} in {} repository already exist".format(collaborator, self.repository))
+                    print("The collaborator {} in {} repository already exist.".format(collaborator, self.repository))
                 else:
                     repository.add_to_collaborators(collaborator)
                     print("{}, Please check email invitation for collab {} repository.".format(collaborator, self.repository))
+            elif self.action == "del":
+                if collaborator in listCollaborators:
+                    repository.remove_from_collaborators(collaborator)
+                    print("{}, Has been deleted from {} repository".format(collaborator, self.repository))
+                else:
+                    print("{}, Doesn't exist in {} repository.".format(collaborator, self.repository))
 
 if __name__ == '__main__':
     githubService()
