@@ -82,6 +82,8 @@ githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
             else:
                 newRepo = self.user_github.create_repo(self.repository, private=self.privateRepository, auto_init=self.initRepository)
                 print("{} repository created".format(self.repository))
+                changeDefaultBranch = self.user_github.get_repo(self.user_github.login + '/' + self.repository)
+                changeDefaultBranch.edit(default_branch="master")
         elif self.action == "del":
             # githubService repo del -r ${REPO_NAME}
             if self.repository in listRepo:
@@ -117,3 +119,4 @@ githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
 
 if __name__ == '__main__':
     githubService()
+
