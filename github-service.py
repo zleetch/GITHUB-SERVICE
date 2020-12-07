@@ -81,6 +81,7 @@ githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
             else:
                 newRepo = self.user_github.create_repo(self.repository, private=self.privateRepository, auto_init=self.initRepository)
                 print("{} repository created".format(self.repository))
+                print(self.collaborators)
                 if self.collaborators:
                     print("Hello")
                     getattr(self, "collab")()
