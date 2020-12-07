@@ -69,16 +69,6 @@ githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
         getattr(self, self.function)()
 
     def repo(self):
-        #
-        listCollaborators = []
-        collaborators = []
-        collaborators = self.collaborators
-        repositoryName = self.user_github.login + '/' + self.repository
-        repository = self.github_login.get_repo(repositoryName)
-        getCollaborators = repository.get_collaborators()
-        for getCollaborator in getCollaborators:
-            listCollaborators.append(getCollaborator.login)
-        #
         listRepo = []
         for repo in self.user_github.get_repos():
             listRepo.append(repo.name)
@@ -91,16 +81,9 @@ githubService <function> <action>  --access '$ACCESS_TOKEN' [<args>]
             else:
                 newRepo = self.user_github.create_repo(self.repository, private=self.privateRepository, auto_init=self.initRepository)
                 print("{} repository created".format(self.repository))
-                #
-                for collaborator in collaborators:
-                    if self.action == "add":
-                    # githubService collab add -r ${REPO_NAME} -c ${COLLAB_NAME} -c ${COLLAB_NAME}
-                        if collaborator in listCollaborators:
-                            print("The collaborator {} in {} repository already exist.".format(collaborator, self.repository))
-                        else:
-                            repository.add_to_collaborators(collaborator)
-                            print("{}, Please check email invitation for collab {} repository.".format(collaborator, self.repository))
-                # 
+                if self.collaborators:
+                    print("Hello")
+                    getattr(self, "collab")()
                 # repoInfo = self.github_login.get_repo(self.user_github.login + '/' + self.repository)
                 # sourceBranch = repo.get_branch("main")
                 # repoInfo.create_git_ref(ref='refs/heads/master', sha=sourceBranch.commit.sha)
