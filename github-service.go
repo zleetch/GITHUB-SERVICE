@@ -83,8 +83,8 @@ func main() {
   //LOGIN
   ctx := context.Background()
   ts := oauth2.StaticTokenSource(
-    &oauth2.Token{AccessToken: "e83c03afa5649ab3925c3fc32139b44ee7caf089"},
-    //0b5e8be67df5b98f7770ddbc876a45284e3bfd33
+    &oauth2.Token{AccessToken: "ACCESSTOKEN"},
+    //
   )
   tc := oauth2.NewClient(ctx, ts)
   client := github.NewClient(tc)
